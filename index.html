@@ -35,6 +35,9 @@
                 margin: 10px 0 0 0;
                 display: block;
             }
+            .test-input {
+                margin: 0 5px 5px 0;
+            }
 
         </style>
     </head>
@@ -70,6 +73,30 @@
                 }
             ];
 
+            class TestInput extends React.Component {
+                state = {
+                    inputValue: '',
+                };
+
+                onChangeHandler = (e) => {
+                    console.log(e);
+                    this.setState({ inputValue: e.target.value })
+                };
+
+                onClickButtonHandler = (e) => {
+                    alert(this.state.inputValue);
+                };
+
+                render() {
+                    return (
+                        <React.Fragment>
+                            <input className='test-input' onChange={this.onChangeHandler} value={this.state.inputValue} placeholder='_введите значение_'/>
+                            <button onClick={this.onClickButtonHandler}>Кнопка</button>
+                        </React.Fragment>
+                    )
+                }
+            }
+
             class Article extends React.Component {
                 state = {
                     visible: false, // определили начальное состояние
@@ -82,6 +109,7 @@
 
                 render() {
                     const { author, text, bigText } = this.props.data;
+                    console.log('render', this);
                     return (
                         <div className="article">
                             <p className="news__author">{author}:</p>
@@ -107,6 +135,14 @@
 
             class News extends React.Component {
 
+                state = {
+                    counter: 0,
+                };
+
+                handleCounter = () => {
+                    this.setState({counter: ++this.state.counter})
+                };
+
                 renderNews = () => {
                     const { data } = this.props; // аналогично записи const data = this.props.data
                     let newsTemplate;
@@ -129,8 +165,9 @@
                         <div className="news">
                             {this.renderNews()}
                             {
-                                data.length ? <strong className={'news__count'}>Всего новостей: {data.length}</strong> : null
+                                data.length ? <strong className={'news__count'} onClick={this.handleCounter}>Всего новостей: {data.length}</strong> : null
                             }
+                            <p>Всего кликов: {this.state.counter}</p>
                         </div>
                     );
                 }
@@ -143,6 +180,7 @@
             const App = () => {
                 return (
                     <React.Fragment>
+                        <TestInput />
                         <h3>Новости</h3>
                         <News data={myNews}/>
                     </React.Fragment>
