@@ -38,6 +38,33 @@
             .test-input {
                 margin: 0 5px 5px 0;
             }
+            .add {
+                margin: 0 5px 5px 0;
+                width: 210px;
+                border: 1px dashed rgba(0, 89, 181, 0.82);
+                padding: 5px;
+            }
+            .add__author, .add__text, .add__btn, .add__checkrule {
+                display: block;
+                margin: 0 0 5px 0;
+                padding: 5px;
+                width: 94%;
+                border: 1px solid rgba(0, 89, 181, 0.82);
+            }
+            .add__checkrule {
+                border: none;
+                font-size: 12px;
+            }
+            .add__btn {
+                box-sizing: content-box;
+                color: #FFF;
+                text-transform: uppercase;
+                background: #007DDC;
+            }
+            .add__btn:disabled {
+                background: #CCC;
+                color: #999;
+            }
 
         </style>
     </head>
@@ -73,25 +100,61 @@
                 }
             ];
 
-            class TestInput extends React.Component {
+            class Add extends React.Component {
+
                 state = {
-                    inputValue: '',
+                    valueInput: '',
+                    valueTextArea: '',
+                    valueCheckBox: false,
                 };
 
-                onChangeHandler = (e) => {
-                    console.log(e);
-                    this.setState({ inputValue: e.target.value })
+                validate = () => {
+                    if (this.state.valueInput.trim() && this.state.valueTextArea.trim() && this.state.valueCheckBox) {
+                        return true
+                    }
+                    return false
+                };
+
+                handleChangeInput = (e) => {
+                    this.setState({ valueInput: e.currentTarget.value })
+                };
+
+                handleChangeTextArea = (e) => {
+                    this.setState({ valueTextArea: e.currentTarget.value })
+                };
+
+                handleChangeCheckBox = (e) => {
+                    console.log(this.state.valueCheckBox);
+                    this.setState({ valueCheckBox: e.currentTarget.checked })
                 };
 
                 onClickButtonHandler = (e) => {
-                    alert(this.state.inputValue);
+                    e.preventDefault();
+                    alert(this.state.valueInput + '\n' + this.state.valueTextArea);
                 };
 
                 render() {
+                    console.log('render Add');
                     return (
                         <React.Fragment>
-                            <input className='test-input' onChange={this.onChangeHandler} value={this.state.inputValue} placeholder='_введите значение_'/>
-                            <button onClick={this.onClickButtonHandler}>Кнопка</button>
+                            <form className='add'>
+                                <input type='text' className='add__author'
+                                       onChange={this.handleChangeInput}
+                                       value={this.state.valueInput} placeholder='Ваше имя'
+                                />
+                                <textarea className='add__text'
+                                          onChange={this.handleChangeTextArea}
+                                          value={this.state.valueTextArea} placeholder='Текст новости'>
+
+                                </textarea>
+                                <label className='add__checkrule'>
+                                    <input type='checkbox'  onChange={this.handleChangeCheckBox}/>Я согласен с правилами
+                                </label>
+                                <button className='add__btn'
+                                        disabled={!this.validate()}
+                                        onClick={this.onClickButtonHandler}>Показать alert
+                                </button>
+                            </form>
                         </React.Fragment>
                     )
                 }
@@ -180,7 +243,7 @@
             const App = () => {
                 return (
                     <React.Fragment>
-                        <TestInput />
+                        <Add />
                         <h3>Новости</h3>
                         <News data={myNews}/>
                     </React.Fragment>
